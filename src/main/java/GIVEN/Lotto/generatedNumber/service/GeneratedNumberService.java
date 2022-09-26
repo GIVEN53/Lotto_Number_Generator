@@ -19,7 +19,6 @@ public class GeneratedNumberService {
     }
 
     public GeneratedNumber generateRandomNumber() { // 7개의 번호 생성
-        GeneratedNumber generatedNumber = new GeneratedNumber();
         int[] arr = new int[7];
 
         for (int i = 0; i < 7; i++) {
@@ -30,7 +29,9 @@ public class GeneratedNumberService {
         }
         Arrays.sort(arr);
 
-        generatedNumber.setNumbers(Arrays.toString(arr));
+        GeneratedNumber generatedNumber = GeneratedNumber.builder()
+                .numbers(Arrays.toString(arr))
+                .build();
         return generatedNumberRepository.save(generatedNumber);
     }
 

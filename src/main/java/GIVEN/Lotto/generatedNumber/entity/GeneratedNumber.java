@@ -1,13 +1,15 @@
 package GIVEN.Lotto.generatedNumber.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GeneratedNumber { // 생성된 로또 번호
 
     @Id
@@ -15,9 +17,12 @@ public class GeneratedNumber { // 생성된 로또 번호
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int probability; // 당첨번호에 맞은 확률
+    private String numbers; // 배열을 String으로 파싱 -> 번호 7개
 
-    private String numbers; // 배열을 String으로 파싱 -> 번호 6개
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    private int round;
 
     // 멤버
 }
