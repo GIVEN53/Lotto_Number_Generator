@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### custom ###
+/src/main/resources/application-db.properties
+/src/main/resources/application-ssl.properties
