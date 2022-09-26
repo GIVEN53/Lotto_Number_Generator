@@ -1,16 +1,14 @@
 package GIVEN.Lotto.winningNumber.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Getter
-@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class WinningNumber { // 토요일마다 당첨된 로또 번호
 
     @Id
@@ -18,11 +16,11 @@ public class WinningNumber { // 토요일마다 당첨된 로또 번호
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private final int round; // 회차
+    private int round; // 회차
 
-    private final Date date; // 날짜
+    private String date; // 날짜
 
-    private final String numbers; // DTO에서 배열로 받고 String으로 파싱 -> 번호 6개
+    private String numbers; // DTO에서 배열로 받고 String으로 파싱 -> 번호 6개
 
-    private final int bonus; // 보너스 번호
+    private int bonus; // 보너스 번호 1개
 }
