@@ -1,16 +1,16 @@
 package GIVEN.Lotto.generatedNumber.entity;
 
+import GIVEN.Lotto.audit.CreateOnlyAuditable;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeneratedNumber { // 생성된 로또 번호
+public class GeneratedNumber extends CreateOnlyAuditable { // 생성된 로또 번호
 
     @Id
     @Column(name = "GENERATED_ID")
@@ -19,10 +19,7 @@ public class GeneratedNumber { // 생성된 로또 번호
 
     private String numbers; // 배열을 String으로 파싱 -> 번호 7개
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
     private int round;
 
-    // 멤버
+    // Todo Member
 }
