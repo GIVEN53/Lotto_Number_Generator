@@ -19,7 +19,7 @@ public class GeneratedNumberController {
 
     @GetMapping
     public ResponseEntity GenerateNumber() {
-        GeneratedNumber number = generatedNumberService.generateRandomNumber();
+        GeneratedNumber number = generatedNumberService.createRandomNumber();
 
         return new ResponseEntity<>(number, HttpStatus.OK);
     }
