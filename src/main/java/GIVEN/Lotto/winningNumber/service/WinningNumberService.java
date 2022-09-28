@@ -19,8 +19,12 @@ public class WinningNumberService {
         this.winningNumberRepository = winningNumberRepository;
     }
 
-    private WinningNumber findVerifiedWinningNumber(long winningId) {
-        Optional<WinningNumber> optionalWinningNumber = winningNumberRepository.findById(winningId);
+    public WinningNumber findWinningNumber(int round) {
+        return findVerifiedWinningNumber(round);
+    }
+
+    private WinningNumber findVerifiedWinningNumber(int round) {
+        Optional<WinningNumber> optionalWinningNumber = winningNumberRepository.findByRound(round);
         WinningNumber winningNumber =
                 optionalWinningNumber.orElseThrow(() -> new RuntimeException());
 

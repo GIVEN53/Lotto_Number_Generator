@@ -13,32 +13,24 @@ import java.util.Map;
 public interface WinningNumberMapper {
 
     default WinningNumber responseToWinningNumber(String response) {
-        Map<String, String> map = StringToMap(response);
+        JSONObject json = new JSONObject(response); // API에서 받은 response를 JSON으로 변환
 
+        // 로또 번호 mapping
         int[] arr = new int[6];
         for (int i = 0; i < 6; i++) {
-            arr[i] = Integer.parseInt(map.get("drwtNo" + (i+1)));
+            arr[i] = (int) json.get("drwtNo" + (i+1));
         }
+
         WinningNumber winningNumber =
                 WinningNumber.builder()
-                        .numbers(Arrays.toString(arr))
-                        .bonus(Integer.parseInt(map.get("bnusNo")))
-                        .date(map.get("drwNoDate"))
-                        .round(Integer.parseInt(map.get("drwNo")))
+                        .numbers(Arrays.toString(arr).replace("[", "").replace("]", ""))
+                        .bonus((int) json.get("bnusNo"))
+                        .date((String) json.get("drwNoDate"))
+                        .round((int) json.get("drwNo"))
                         .build();
 
         return winningNumber;
     }
 
-    private Map<String, String> StringToMap(String response) {
-        JSONObject json = new JSONObject(response); // API에서 받은 response를 JSON으로 변환
-        Map<String, String> map = new HashMap<>();
-
-        Iterator<String> iterator = json.keys();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            map.put(key, json.get(key).toString());
-        }
-        return map;
-    }
+    // Todo String 번호 6개, 보너스 번호 1개 -> int[]
 }
