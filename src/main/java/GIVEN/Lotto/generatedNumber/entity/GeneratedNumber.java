@@ -1,6 +1,9 @@
 package GIVEN.Lotto.generatedNumber.entity;
 
 import GIVEN.Lotto.audit.CreateOnlyAuditable;
+import GIVEN.Lotto.member.entity.Member;
+import GIVEN.Lotto.probability.entity.Probability;
+import GIVEN.Lotto.winningNumber.entity.WinningNumber;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,9 +20,18 @@ public class GeneratedNumber extends CreateOnlyAuditable { // 생성된 로또 �
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String numbers; // 배열을 String으로 파싱 -> 번호 7개
 
-    private int round;
+    @ManyToOne
+    @JoinColumn(name = "ROUND", nullable = false)
+    private WinningNumber winningNumber;
 
-    // Todo Member
+    // @OneToMany 하기 위함, 외래키만 관리하고 null
+    @ManyToOne
+    @JoinColumn(name = "PROBABILITY_ID")
+    private Probability probability;
+
+    @OneToOne(mappedBy = "generatedNumber")
+    private Member member;
 }

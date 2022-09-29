@@ -3,7 +3,9 @@ package GIVEN.Lotto.generatedNumber.service;
 import GIVEN.Lotto.generatedNumber.entity.GeneratedNumber;
 import GIVEN.Lotto.generatedNumber.mapper.GeneratedNumberMapper;
 import GIVEN.Lotto.generatedNumber.repository.GeneratedNumberRepository;
-import GIVEN.Lotto.winningNumber.repository.WinningNumberRepository;
+import GIVEN.Lotto.member.service.MemberService;
+import GIVEN.Lotto.winningNumber.entity.WinningNumber;
+import GIVEN.Lotto.winningNumber.service.WinningNumberService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -15,36 +17,52 @@ public class GeneratedNumberService {
 
     private final GeneratedNumberRepository generatedNumberRepository;
 
-    private final WinningNumberRepository winningNumberRepository;
+    private final WinningNumberService winningNumberService;
 
     private final GeneratedNumberMapper mapper;
     private final Random random;
 
-    public GeneratedNumberService(GeneratedNumberRepository generatedNumberRepository, WinningNumberRepository winningNumberRepository, GeneratedNumberMapper mapper, Random random) {
+    public GeneratedNumberService(GeneratedNumberRepository generatedNumberRepository,
+                                  WinningNumberService winningNumberService,
+                                  GeneratedNumberMapper mapper,
+                                  Random random) {
         this.generatedNumberRepository = generatedNumberRepository;
-        this.winningNumberRepository = winningNumberRepository;
+        this.winningNumberService = winningNumberService;
         this.mapper = mapper;
         this.random = random;
     }
 
     // 7개의 번호 생성
-    public GeneratedNumber createRandomNumber() {
+    public GeneratedNumber saveGeneratedNumber(GeneratedNumber prevGeneratedNumber) {
+        WinningNumber curWinningNumber = winningNumberService.findCurrentWinningNumber();
         int[] arr = generateRandomNumber();
-        int round = winningNumberRepository.findTopByOrderByIdDesc().getRound(); // 현재 회차
 
+        // 이전 생성 번호 삭제 -> 한 멤버 당 하나의 번호만 생성할 수 있음
+        if (prevGeneratedNumber != null) {
+            deleteGeneratedNumber(prevGeneratedNumber.getId());
+        }
+
+        // 새로운 번호 생성
         GeneratedNumber generatedNumber = GeneratedNumber.builder()
                 .numbers(mapper.arrayToStringNumbers(arr))
-                .round(round)
+                .winningNumber(curWinningNumber)
                 .build();
 
         return generatedNumberRepository.save(generatedNumber);
     }
 
-    // Todo modify parameter MemberId
-    public GeneratedNumber findGeneratedNumber(long generatedNumberId) {
-        GeneratedNumber generatedNumber = findVerifiedNumber(generatedNumberId);
-        System.out.println(Arrays.toString(mapper.stringNumbersToArray(generatedNumber.getNumbers())));
-        return generatedNumber;
+    public void deleteGeneratedNumber(long numberId) {
+        GeneratedNumber findGeneratedNumber = findVerifiedNumber(numberId);
+
+        generatedNumberRepository.delete(findGeneratedNumber);
+    }
+
+    // Todo Modify Exception
+    private GeneratedNumber findVerifiedNumber(long numberId) {
+        Optional<GeneratedNumber> optionalNumber = generatedNumberRepository.findById(numberId);
+        GeneratedNumber findGeneratedNumber = optionalNumber.orElseThrow(() -> new RuntimeException());
+
+        return findGeneratedNumber;
     }
 
     private int[] generateRandomNumber() {
@@ -68,13 +86,5 @@ public class GeneratedNumberService {
             }
         }
         return false;
-    }
-
-    // Todo Modify
-    private GeneratedNumber findVerifiedNumber(long generatedNumberId) {
-        Optional<GeneratedNumber> optionalNumber = generatedNumberRepository.findById(generatedNumberId);
-        GeneratedNumber generatedNumber = optionalNumber.orElseThrow(() -> new RuntimeException());
-
-        return generatedNumber;
     }
 }
