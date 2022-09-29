@@ -25,7 +25,7 @@ public class DHLotteryAPI {
 
     // Todo 스케줄러
     public WinningNumber saveWinningNumber() {
-        int round = winningNumberRepository.findTopByOrderByIdDesc().getRound(); // 이전 회차 얻기
+        int round = winningNumberRepository.findTopByOrderByRoundDesc().getRound(); // 이전 회차 얻기
         String response = getNumberFromAPI(round + 1); // 현재 회차 정보
 
         WinningNumber winningNumber = mapper.responseToWinningNumber(response);

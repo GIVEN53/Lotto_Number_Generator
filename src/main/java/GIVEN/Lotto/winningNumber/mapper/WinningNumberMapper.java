@@ -5,15 +5,13 @@ import org.json.JSONObject;
 import org.mapstruct.Mapper;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 @Mapper(componentModel = "spring")
 public interface WinningNumberMapper {
 
     default WinningNumber responseToWinningNumber(String response) {
-        JSONObject json = new JSONObject(response); // API에서 받은 response를 JSON으로 변환
+        // API에서 받은 response를 JSON으로 파싱
+        JSONObject json = new JSONObject(response);
 
         // 로또 번호 mapping
         int[] arr = new int[6];
@@ -23,10 +21,11 @@ public interface WinningNumberMapper {
 
         WinningNumber winningNumber =
                 WinningNumber.builder()
-                        .numbers(Arrays.toString(arr).replace("[", "").replace("]", ""))
-                        .bonus((int) json.get("bnusNo"))
-                        .date((String) json.get("drwNoDate"))
                         .round((int) json.get("drwNo"))
+                        .numbers(Arrays.toString(arr).replace("[", "").replace("]", ""))
+                        .bonusNumber((int) json.get("bnusNo"))
+                        .date((String) json.get("drwNoDate"))
+                        .firstWinAmount((Long) json.get("firstWinamnt"))
                         .build();
 
         return winningNumber;

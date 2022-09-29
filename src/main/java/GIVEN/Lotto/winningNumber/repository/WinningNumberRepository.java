@@ -5,9 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface WinningNumberRepository extends JpaRepository<WinningNumber, Long> {
+public interface WinningNumberRepository extends JpaRepository<WinningNumber, Integer> {
 
-    WinningNumber findTopByOrderByIdDesc();
-
+    WinningNumber findTopByOrderByRoundDesc();
     Optional<WinningNumber> findByRound(int round);
 }

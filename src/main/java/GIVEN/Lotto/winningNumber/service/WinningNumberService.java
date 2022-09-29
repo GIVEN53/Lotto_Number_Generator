@@ -3,9 +3,6 @@ package GIVEN.Lotto.winningNumber.service;
 import GIVEN.Lotto.winningNumber.entity.WinningNumber;
 import GIVEN.Lotto.winningNumber.repository.WinningNumberRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 
@@ -19,6 +16,12 @@ public class WinningNumberService {
         this.winningNumberRepository = winningNumberRepository;
     }
 
+    // 현재 회차정보
+    public WinningNumber findCurrentWinningNumber() {
+        return winningNumberRepository.findTopByOrderByRoundDesc(); // 현재 회차정보
+    }
+
+    // 원하는 회차정보 찾을 때
     public WinningNumber findWinningNumber(int round) {
         return findVerifiedWinningNumber(round);
     }
